@@ -13,7 +13,7 @@ public class Nivel {
     int siguienteNivel;
 
     public Nivel() {
-
+        this.ladrillos=new ArrayList<>();
     }
 
     public int getId() {
@@ -56,13 +56,43 @@ public class Nivel {
         this.siguienteNivel = siguienteNivel;
     }
 
+    /**
+     *
+     * @param ladrillosStr
+     *  //'0100000100000000000001000001000000000000010000010000000000000000000000000000000000000000000000000000'),
+     */
     public void generarLadrillosDesdeTexto(String ladrillosStr) {
         // TODO 03: En funcion del String recibido, cargar los ladrillos del nivel
+        String[] caracteres = ladrillosStr.split("");
+
+        for (int i = 0; i <caracteres.length ; i++) {
+            if (Integer.parseInt(caracteres[i])>0){
+                Ladrillo ladrillo = new Ladrillo(i%columnas,i/columnas);
+                ladrillo.setVidas(Integer.parseInt(caracteres[i]));
+                ladrillos.add(ladrillo);
+            }
+
+        }
     }
 
     public String generarTextoDesdeLadrillos(){
         // TODO 04: En funcion de los ladrillos del nivel, generar el String que los represente
+        int[][] matriz = new int[filas][columnas];
+
+        for (Ladrillo ladrillo : ladrillos) {
+            matriz[(int) (ladrillo.getY()/TAM_CASILLA)][(int) (ladrillo.getX()/TAM_CASILLA)]=ladrillo.getVidas();
+        }
+
+
         StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i <matriz.length ; i++) {
+            for (int j = 0; j < matriz[0].length ; j++) {
+                sb.append(matriz[i][j]);
+            }
+        }
+
+
         return sb.toString();
     }
 }

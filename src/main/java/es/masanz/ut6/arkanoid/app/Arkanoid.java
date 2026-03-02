@@ -18,8 +18,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static es.masanz.ut6.arkanoid.conf.Const.*;
 
@@ -48,7 +47,7 @@ public class Arkanoid extends Application {
         Scene scene = new Scene(root);
 
         // TODO 11: inicializa el nivel
-        nivel = null;
+        nivel = new Nivel();
 
         lienzo = new Canvas();
         generarMapa();
@@ -90,13 +89,28 @@ public class Arkanoid extends Application {
         //  La lista de "potenciadores" debera estar vacia
         //  La lista de "bolas" debera contener unicamente la bola que esta aqui definida
         //  La lista de "ladrillos" la deberas obtener del nivel
+        sprites = new HashMap<>();
+        List<Sprite> ladrillos =new ArrayList<>();
+        List<Sprite> bolas= new ArrayList<>();
+        List<Sprite> potenciadores = new ArrayList<>();
+        List<Ladrillo> ladNivel= nivel.getLadrillos();
+
+        for (Ladrillo ladrillo : ladNivel) {
+            ladrillos.add(ladrillo);
+        }
         Bola bola = new Bola(nivel.getColumnas() / 2 * TAM_CASILLA, (nivel.getFilas()-4) * TAM_CASILLA);
+        bolas.add(bola);
+
+        sprites.put("ladrillos",ladrillos);
+        sprites.put("bolas",bolas);
+        sprites.put("potenciadores",potenciadores);
 
         // NO TOCAR ESTAS LINEAS
         paleta = new Paleta(nivel.getColumnas()/2 - TAM_CASILLA*6/2, (nivel.getFilas()-3)*TAM_CASILLA, 4, TAM_CASILLA*6, TAM_CASILLA, 0, 0);
         lienzo.setHeight(nivel.getFilas() * TAM_CASILLA);
         lienzo.setWidth(nivel.getColumnas() * TAM_CASILLA);
         this.stage.sizeToScene();
+
     }
 
     private void cicloDelJuego() {
@@ -144,11 +158,22 @@ public class Arkanoid extends Application {
 
     private void moverLadrillos() {
         // TODO 13: Deberas mover todos los ladrillos
+
+        List<Sprite> l =sprites.get("ladrillos");
+        for (Sprite sprite : l) {
+            sprite.mover(nivel);
+        }
+
+
     }
 
     private List<Sprite> moverBolas() {
         // TODO 14: Deberas mover todas las bolas y devolver aquellas que no se puedan mover
-        return null;
+        List<Sprite> l =sprites.get("bolas");
+        for (Sprite sprite : l) {
+            sprite.mover(nivel);
+        }
+        return l;
     }
 
     private List<Sprite> moverPotenciadores() {
@@ -156,6 +181,17 @@ public class Arkanoid extends Application {
         //  o bien que despues de moverse esten en colision con la paleta.
         //  Adicionalmente, si entra en contacto con la paleta, se debera aplicar
         //  su efecto a todos los sprites que pueda afectar su potenciacion (a la paleta, bolas, etc)
+        boolean sepudomover=false;
+        List<Sprite> l =sprites.get("potenciadores");
+        for (Sprite sprite : l) {
+          sepudomover= sprite.mover(nivel);
+          if (sepudomover && sprite.hayColision(paleta)){
+              Potenciador potenciador = (Potenciador) sprite;
+              potenciador.aplicarEfecto(l);
+          }
+        }
+
+
         return null;
     }
 

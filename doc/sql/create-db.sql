@@ -1,5 +1,5 @@
 
-CREATE USER 'inter'@'localhost' IDENTIFIED BY 'inter';
+CREATE USER 'arkanoid'@'localhost' IDENTIFIED BY 'arkanoid';
 
 CREATE DATABASE arkanoid;
 
