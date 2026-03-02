@@ -9,7 +9,7 @@ import java.util.List;
 public class NivelDao {
 
     public static Nivel obtenerNivel(int id){
-        String sql="SELECT id, filas, columnas, ladrillos, siguiente_nivel FROM nivel WHERE id = ?";
+        String sql="SELECT filas, columnas, ladrillos, siguiente_nivel FROM arkanoid.nivel WHERE id = ?";
         Object[] params={id};
         Object[][] resultados = ConnectionManager.ejecutarSelectSQL(sql,params);
         if (resultados!=null){
@@ -18,10 +18,14 @@ public class NivelDao {
             nivel.setColumnas((int) resultados[0][1]);
             nivel.generarLadrillosDesdeTexto((String) resultados[0][2]);
             nivel.setSiguienteNivel((int) (resultados[0][3]));
+            nivel.setId(id);
             return nivel;
         }
         return null;
+
     }
+
+
 
 
 }
